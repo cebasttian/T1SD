@@ -1,0 +1,52 @@
+version: '3'
+services:
+  #Primera particion de redis
+  redis1:
+    image: 'bitnami/redis:latest'
+    container_name: redis1
+    ports: 
+      - "6379:6379"
+    volumes:
+      - ./redis1/data:/data
+      - ./redis1/config/redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf --protected-mode no
+  #Segunda particion de redis
+  redis2:
+    image: 'bitnami/redis:latest'
+    container_name: redis2
+    ports: 
+      - "6377:6377"
+    volumes:
+      - ./redis2/data:/data
+      - ./redis2/config/redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf --protected-mode no
+  #Tercera particion de redis
+  redis3:
+    image: 'bitnami/redis:latest'
+    container_name: redis3
+    ports: 
+      - "6375:6375"
+    volumes:
+      - ./redis3/data:/data
+      - ./redis3/config/redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf --protected-mode no
+  #postgres
+  database:
+    image: 'bitnami/postgresql:latest'
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: exampledb
+  #adminer auxiliar
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: always
+    depends_on:
+      - database
+    ports:
+      - 8080:8080
